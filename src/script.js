@@ -1,129 +1,139 @@
 import "./style.css";
 import * as THREE from "three";
-import gsap from 'gsap'
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
-import { DirectionalLight } from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import {OBJLoader} from "three/examples/jsm/loaders/OBJLoader"
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader"
+import * as dat from "dat.gui";
 
-//scene
+//Scene
 const scene = new THREE.Scene();
+// const objLoader=new OBJLoader()
 
-//light
-const amb=new THREE.AmbientLight(0xffffff,2.2)
-const directional=new THREE.DirectionalLight(0xffffff,1.1)
-const backlight=new THREE.DirectionalLight(0xffffff,1)
-const toplight=new DirectionalLight(0xffffff,0.7)
-// 0xf44a68
-// ffb9b6
-directional.position.set(0,1,1)
-backlight.position.set(0,0,-1)
-toplight.position.set(0,1,-1)
+const ambiLight=new THREE.AmbientLight(0xffffff,1)
+const dirLight=new THREE.DirectionalLight(0xffffff,1)
+dirLight.position.z=2
+scene.add(ambiLight,dirLight)
 
-scene.add(amb,directional,backlight,toplight)
+// const geometry=new THREE.BoxGeometry();
+// const material=new THREE.MeshPhongMaterial({color:"purple"})
+// const mesh=new THREE.Mesh(geometry,material)
+// mesh.scale.set(1,1,1)
+// scene.add(mesh)
+//Debugging
+// const gui = new dat.GUI();
 
-let mesh3=null
-let animationMixer=null;
-const gltfloader=new GLTFLoader().load('/models/final-10.glb',(glb)=>{
-  animationMixer=new THREE.AnimationMixer(glb.scene)
-  for (let i=0;i<5;i++){
-    if (glb.animations[i].duration<10){
-      glb.animations[i].duration=40;
-    }
-    const clipAction=animationMixer.clipAction(glb.animations[i])
-    clipAction.play();
-  }
-  mesh3=glb.scene;
-  mesh3.position.set(0,0.1,0)
-  mesh3.scale.set(0.083,0.083,0.083)
+
+// objLoader.load("models/untitled.obj",(object)=>{
+//   scene.add(object)
+// })
+
+// let mesh3=null
+// let animationMixer=null
+const gltfloader=new GLTFLoader().load ("/models/scene.gltf",(glb)=>{
+  // animationMixer=new THREE.AnimationMixer(glb.scene)
+  console.log(glb)
+  // const clipAction=animationMixer.clipAction(glb.animations[0])
+  // clipAction.play()
+  // glb.scene.rotation.y=Math.PI*0.5
+  // glb.scene.position.x=-40
+  // mesh3=glb.scene
+  glb.scene.position.set(0,0,0)
   scene.add(glb.scene)
-  console.log(glb);
+  console.log(glb)
 })
 
+const axisHelper=new THREE.AxesHelper()
+scene.add(axisHelper)
 
-const cursor={
-    x:0,y:0
+// const geometry=new THREE.BoxGeometry()
+// const material=new THREE.MeshPhongMaterial({color:"green"})
+// const mesh=new THREE.Mesh(geometry,material)
+// mesh.rotation.x=-Math.PI*0.5
+// mesh.scale.y=5
+// mesh.scale.x=100
+
+
+// scene.add(mesh)
+
+// const geometry1=new THREE.BoxGeometry()
+// const material1=new THREE.MeshPhongMaterial({color:"grey"})
+// const mesh1=new THREE.Mesh(geometry1,material1)
+// mesh1.rotation.x=-Math.PI*0.5
+// mesh1.position.y=0.01
+// mesh1.scale.x=100
+
+// scene.add(mesh1)
+
+
+//Resizing
+window.addEventListener("resize", () => {
+  //Update Size
+  aspect.width =window.innerWidth;
+  aspect.height=window.innerHeight;
+  // mesh.scale.y=(0.33*aspect.height)/2
+  // mesh.scale.x=(0.33*aspect.width)/2
+  //New Aspect Ratio
+  camera.aspect =aspect.width / aspect.height;
+  camera.updateProjectionMatrix();
+
+  //New RendererSize
+  if(window.innerWidth<=756){
+    renderer.setSize(aspect.width, 0.75*aspect.height);
   }
-window.addEventListener('mousemove',(event)=>{
-    cursor.x=event.clientX/window.innerWidth -0.5;
-    cursor.y=event.clientY/window.innerHeight -0.5;
-})
+  else{
+    renderer.setSize(0.33*aspect.width, aspect.height);
+  }
+  
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
 
+//Camera
 const aspect = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  };
-
-
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
 const camera = new THREE.PerspectiveCamera(75, aspect.width / aspect.height);
-if (aspect.width<=650){
-  camera.position.z=1.3;
-}
-else{
-  camera.position.z=1
-}
+camera.position.z =2;
+camera.position.y=1
 scene.add(camera);
 
 //Renderer
-const canvas = document.querySelector(".draw"); //Select the canvas
-const renderer = new THREE.WebGLRenderer({ canvas ,alpha: true}); //add WeBGL Renderer
-renderer.setSize(0.6*aspect.width,aspect.height); //Renderer size
-renderer.physicallyCorrectLights=true;
-renderer.Alp;
+const canvas = document.querySelector(".draw");
+const renderer = new THREE.WebGLRenderer({ canvas:canvas,alpha:true});
+renderer.setSize(0.33*aspect.width, aspect.height);
 
+//OrbitControls
+const orbitControls = new OrbitControls(camera, canvas);
+orbitControls.enableDamping = true;
+orbitControls.enableZoom=false;
+orbitControls.maxPolarAngle=Math.PI/2
 
-//orbit control
-const orbitcontrols = new OrbitControls(camera,canvas)
-orbitcontrols.enableZoom=false;
+//Clock Class
+const clock = new THREE.Clock();
 
-orbitcontrols.enableDamping=true;
-orbitcontrols.minPolarAngle=Math.PI/2;
-orbitcontrols.maxPolarAngle=Math.PI/2;
+let prev=0
 
-window.addEventListener('resize',()=>{
-    aspect.width=window.innerWidth;
-    aspect.height=window.innerHeight;
-  
-    //to inform the camers
-    camera.aspect=aspect.width/aspect.height;
-    camera.updateProjectionMatrix()
+const animate = () => {
+  //GetElapsedTime
+  const elapsedTime = clock.getElapsedTime();
+  // let frameTime=elapsedTime-prev
+  // prev=elapsedTime
+  // if(animationMixer){
+  //   animationMixer.update(frameTime)
+  // }
+  // if(mesh3){
+  //   mesh3.position.x+=elapsedTime*0.52
+  //   mesh3.position.y+=elapsedTime*0.055
+  //   mesh3.rotation.y=0.25*Math.PI
+  // }
+  //Update Controls
+  orbitControls.update();
+  mesh.rotation.y=elapsedTime
 
-    if (aspect.width<=650){
-      camera.position.z=1.3;
-    }
-    else{
-      camera.position.z=1
-    }
-    //new renderer
-    renderer.setSize(0.6*aspect.width,aspect.height);
-    //for more resolution
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
-  })
+  //Renderer
+  renderer.render(scene, camera);
 
-  const clock = new THREE.Clock();
-  let prev=0;
-  
-  //Animate
-  const animate = () => {
-    //GetElapsedTime
-    const elapsedTime = clock.getElapsedTime();
-    const frametime=elapsedTime-prev;
-    prev=elapsedTime;
-    if (animationMixer){
-      animationMixer.update(frametime)
-    }
-
-    if (mesh3){
-      mesh3.rotation.y+=0.002
-    }
-  
-  
-    orbitcontrols.update();
-
-    //Renderer
-    renderer.render(scene, camera); //draw what the camera inside the scene captured
-  
-    //RequestAnimationFrame
-    window.requestAnimationFrame(animate);
-  };
-  animate();
-  
+  //RequestAnimationFrame
+  window.requestAnimationFrame(animate);
+};
+animate();
