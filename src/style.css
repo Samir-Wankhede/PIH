@@ -1,0 +1,172 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  /* font-family: 'Montserrat',sans-serif; */
+}
+
+body{
+  /* background-color: #87CEEB; */
+  /* height: 50vh; */
+  overflow: auto;
+  background: linear-gradient(90deg, rgba(255,185,182) 30%, rgba(255,230,212) 93%);
+}
+.container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+
+  max-width:100%;
+}
+
+.draw{
+  grid-row: 1/span2;
+}
+
+
+.content{
+  margin:  1rem;
+  /* display: grid;
+  grid-template-columns: 1fr 1fr; */
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+
+}
+
+.part{
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.first{
+  grid-row: 1;
+}
+
+.second{
+  grid-row: 2;
+}
+.heading{
+  grid-column: span 2;
+  font-size: 3rem;
+  color: white;
+  z-index: 2;
+  margin:0.8rem;
+  text-shadow: 0.2rem 0.2rem #f44a68;
+
+  
+}
+
+.card{
+  padding: 0.8rem;
+  margin-right: 2rem;
+  min-width: 50%;
+  background-color: #ed6f86;
+  margin: 1rem 2rem 1rem 0rem;
+  border-radius: 0.5rem;
+  
+}
+.card:hover{
+  box-shadow: 0.3rem 0.3rem #f44a68;
+  .card-header{
+    z-index: 10;
+    font-size:1.6rem;
+
+  }
+}
+
+li{
+  list-style: none;
+  padding: 0.25rem;
+  margin:0.2rem
+}
+
+.card-header{
+  padding:0.3rem;
+  text-align: center;
+  color:rgba(2,0,36,1);
+}
+
+.card p{
+  padding: 1rem 0 1rem 0;
+  color: rgba(2,0,36,1);
+  font-size: 1rem;
+  text-align: center;
+}
+
+@media (max-width:1100px){
+  /* .content{
+    display: flex;
+    flex-direction: column;
+  } */
+  .container{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+  .draw{
+    grid-column:1/ span1;
+    grid-row: 1/span1;
+  }
+  /* .part{
+    display: flex;
+    flex-direction: column;
+  } */
+  .first{
+    padding-top:4.5rem ;
+    padding-right: 0.5rem;
+    grid-column: 2/span2;
+    grid-row: 1/span1;
+    vertical-align: middle;
+    width: 40vw;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .second{
+    grid-column: 1/span2;
+    grid-row: span2;
+    display: grid;
+    padding: 1rem;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    flex-direction: row;
+  }
+  .card{
+    margin: 1rem;
+    margin-bottom: 2rem;
+    
+  }
+  .draw{
+    vertical-align: middle;
+  }
+
+}
+
+@media (max-width:700px) {
+  .container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .content{
+    margin:2rem;
+  }
+
+  .part{
+    padding: 2rem 2rem 1rem 2rem;
+    
+  }
+  .first{
+    width: 100%;
+  }
+  .second{
+    display: flex;
+    flex-direction: column;
+  }
+  
+}
+
