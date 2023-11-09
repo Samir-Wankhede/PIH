@@ -9,3 +9,9 @@ It lets the user interacts with 3-D objects as well as know about different even
 
 **GET STARTED**
 
+1. Download the repository zip
+2. Make sure you have node installed.
+3. run the following commands:-
+   npm install
+   npm install three
+4. Run the command "npm run dev" to start the website.
